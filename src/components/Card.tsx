@@ -13,10 +13,10 @@ export default function Card({ href, frontmatter, secHeading = true }: Props) {
     <li className="my-6">
       <a
         href={href}
-        className="inline-block text-lg font-medium text-skin-accent decoration-dashed underline-offset-4 focus-visible:no-underline focus-visible:underline-offset-0"
+        className="inline-block text-lg font-medium text-[#414564] decoration-dashed underline-offset-4 focus-visible:no-underline focus-visible:underline-offset-0"
       >
         {secHeading ? (
-          <h2 className="text-lg font-medium decoration-dashed hover:underline">
+          <h2 className="text-lg font-bold decoration-dashed hover:underline">
             {title}
           </h2>
         ) : (
@@ -26,7 +26,7 @@ export default function Card({ href, frontmatter, secHeading = true }: Props) {
         )}
       </a>
       <Datetime datetime={pubDatetime} />
-      <p>{description}</p>
+      <p className="text-[#776062]">{description}</p>
     </li>
   );
 }
