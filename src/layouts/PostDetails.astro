@@ -5,13 +5,15 @@ import Footer from "@components/Footer.astro";
 import Tag from "@components/Tag.astro";
 import Datetime from "@components/Datetime";
 import type { CollectionEntry } from "astro:content";
-import { slugifyStr } from "@utils/slugify";
+import slugify, { slugifyStr } from "@utils/slugify";
+import Hr from '@components/Hr.astro';
 
 export interface Props {
 	post: CollectionEntry<"blog">;
+	postsInSeries: CollectionEntry<"blog">[];
 }
 
-const { post } = Astro.props;
+const { post, postsInSeries } = Astro.props;
 
 const { title, author, description, ogImage, pubDatetime, tags } = post.data;
 
@@ -40,6 +42,20 @@ const ogUrl = new URL(ogImage ? ogImage : `${title}.png`, Astro.url.origin)
 	<main id="main-content" class="bg-[#F6DFD5]">
 		<h1 class="text-2xl font-semibold text-[#414564]">{title}</h1>
 		<Datetime datetime={pubDatetime} size="lg" className="my-2" />
+			{postsInSeries && 
+			<div class="mb-6">
+				<h2 class="text-xl font-semibold tracking-wide mt-12">{postsInSeries[0].data.series} ({postsInSeries.length} Part Series)</h2>
+				{postsInSeries.map((post, index) => (
+					<div class="mt-3">
+						<span class={`inline-block w-7 h-7 rounded-full text-center ${post.data.title === title ? 'border-2 border-skin-line' : 'bg-skin-card' }`}>{index + 1}</span>
+						<a href={slugify(post.data)}>{post.data.title}</a>
+					
+					</div>
+				))}
+			</div> 
+			<Hr />
+		
+		}
 		<article
 			id="article"
 			role="article"
@@ -47,7 +63,6 @@ const ogUrl = new URL(ogImage ? ogImage : `${title}.png`, Astro.url.origin)
 		>
 			<Content />
 		</article>
-
 		<ul class="tags-container">
 			{tags.map(tag => <Tag name={slugifyStr(tag)} />)}
 		</ul>

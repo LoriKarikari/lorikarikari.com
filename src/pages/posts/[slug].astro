@@ -4,30 +4,33 @@ import Posts from "@layouts/Posts.astro";
 import PostDetails from "@layouts/PostDetails.astro";
 import getSortedPosts from "@utils/getSortedPosts";
 import getPageNumbers from "@utils/getPageNumbers";
+import getPostsInSeries from "@utils/getPostsInSeries";
 import slugify from "@utils/slugify";
 import { SITE } from "@config";
 
 export interface Props {
-  post: CollectionEntry<"blog">;
+	post: CollectionEntry<"blog">;
+	postsInSeries: CollectionEntry<"blog">[];
 }
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog", ({ data }) => !data.draft);
+	const posts = await getCollection("blog", ({ data }) => !data.draft);
+	const postsInSeries = getPostsInSeries(posts, "blog");
 
-  const postResult = posts.map(post => ({
-    params: { slug: slugify(post.data) },
-    props: { post },
-  }));
+	const postResult = posts.map(post => ({
+		params: { slug: slugify(post.data) },
+		props: { post, postsInSeries },
+	}));
 
-  const pagePaths = getPageNumbers(posts.length).map(pageNum => ({
-    params: { slug: String(pageNum) },
-  }));
+	const pagePaths = getPageNumbers(posts.length).map(pageNum => ({
+		params: { slug: String(pageNum) },
+	}));
 
-  return [...postResult, ...pagePaths];
+	return [...postResult, ...pagePaths];
 }
 
 const { slug } = Astro.params;
-const { post } = Astro.props;
+const { post, postsInSeries } = Astro.props;
 
 const posts = await getCollection("blog");
 
@@ -36,9 +39,9 @@ const sortedPosts = getSortedPosts(posts);
 const totalPages = getPageNumbers(sortedPosts.length);
 
 const currentPage =
-  slug && !isNaN(Number(slug)) && totalPages.includes(Number(slug))
-    ? Number(slug)
-    : 0;
+	slug && !isNaN(Number(slug)) && totalPages.includes(Number(slug))
+		? Number(slug)
+		: 0;
 const lastPost = currentPage * SITE.postPerPage;
 const startPost = lastPost - SITE.postPerPage;
 
@@ -46,13 +49,13 @@ const paginatedPosts = sortedPosts.slice(startPost, lastPost);
 ---
 
 {
-  post ? (
-    <PostDetails post={post} />
-  ) : (
-    <Posts
-      posts={paginatedPosts}
-      pageNum={currentPage}
-      totalPages={totalPages.length}
-    />
-  )
+	post ? (
+		<PostDetails post={post} postsInSeries={postsInSeries} />
+	) : (
+		<Posts
+			posts={paginatedPosts}
+			pageNum={currentPage}
+			totalPages={totalPages.length}
+		/>
+	)
 }
