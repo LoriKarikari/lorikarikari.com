@@ -1,8 +1,8 @@
 import type { Site, SocialObjects } from "./types";
 
 export const SITE: Site = {
-  // website: "https://lorikarikari.com",
-  website: "https://lorikarikari.github.io",
+  website: "https://lorikarikari.com",
+  //website: "https://lorikarikari.github.io",
   author: "Lori Karikari",
   desc: "Lori Karikari's personal blog",
   title: "Lori Karikari",
