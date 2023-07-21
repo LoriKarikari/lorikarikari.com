@@ -12,8 +12,8 @@ breadcrumbList[0] === "posts" &&
   breadcrumbList.splice(0, 2, `Posts (page ${breadcrumbList[1] || 1})`);
 ---
 
-<nav class="mx-auto pb-1 pt-8 w-full max-w-3xl px-4 bg-skin-fill" aria-label="breadcrumb">
-  <ul class="flex">
+<nav class="breadcrumb" aria-label="breadcrumb">
+  <ul>
     <li>
       <a href="/">Home</a>
       <span aria-hidden="true">&#62;</span>
@@ -42,9 +42,9 @@ breadcrumbList[0] === "posts" &&
 </nav>
 
 <style>
-  /* .breadcrumb {
-    @apply;
-  } */
+  .breadcrumb {
+    @apply mx-auto mb-1 mt-8 w-full max-w-3xl px-4;
+  }
   .breadcrumb ul li {
     @apply inline;
   }
