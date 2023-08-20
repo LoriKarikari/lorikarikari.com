@@ -23,8 +23,6 @@ export async function getStaticPaths() {
   const posts = await getCollection("blog", ({ data }) => !data.draft);
   const series = getSeries(posts);
 
-  console.log({ series });
-
   return series.map(s => ({
     params: { series: slugifyStr(s) },
     props: { series: s },
@@ -36,8 +34,6 @@ const { series } = Astro.props;
 const posts = await getCollection("blog", ({ data }) => !data.draft);
 const postsInSeries = getPostsInSeries(posts, series);
 const sortedPosts = getSortedPosts(postsInSeries);
-
-console.log({ postsInSeries });
 
 const totalPages = getPageNumbers(sortedPosts.length);
 
