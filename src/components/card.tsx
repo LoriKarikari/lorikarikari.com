@@ -1,4 +1,4 @@
-import Datetime from "./Datetime";
+import Datetime from "./datetime";
 import type { BlogFrontmatter } from "@content/_schemas";
 
 export interface Props {

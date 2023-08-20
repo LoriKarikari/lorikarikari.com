@@ -1,27 +1,28 @@
 ---
 import { getCollection } from "astro:content";
 import { SITE } from "@config";
-import Layout from "@layouts/Layout.astro";
-import Main from "@layouts/Main.astro";
-import Header from "@components/Header.astro";
-import Footer from "@components/Footer.astro";
-import Search from "@components/Search";
+import Layout from "@layouts/layout.astro";
+import Main from "@layouts/main.astro";
+import Header from "@components/header.astro";
+import Footer from "@components/footer.astro";
+import Search from "@components/search";
 
 // Retrieve all articles
 const posts = await getCollection("blog", ({ data }) => !data.draft);
 
 // List of items to search in
 const searchList = posts.map(({ data }) => ({
-	title: data.title,
-	description: data.description,
-	data,
+  title: data.title,
+  description: data.description,
+  data,
 }));
 ---
 
 <Layout title={`Search | ${SITE.title}`}>
-	<Header activeNav="search" />
-	<Main pageTitle="Search" pageDesc="Search any article ...">
-		<Search client:load searchList={searchList} />
-	</Main>
-	<Footer />
+  <Header activeNav="search" />
+  <Main pageTitle="Search" pageDesc="Search any article ...">
+    <Search client:load searchList={searchList} />
+  </Main>
+  <Footer />
 </Layout>
+@components/search
