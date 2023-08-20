@@ -1,0 +1,69 @@
+---
+import { CollectionEntry, getCollection } from "astro:content";
+import Posts from "@layouts/posts.astro";
+import PostDetails from "@layouts/post-details.astro";
+import getSortedPosts from "@utils/getSortedPosts";
+import getPageNumbers from "@utils/getPageNumbers";
+import getPostsInSeries from "@utils/getPostsInSeries";
+import slugify, { slugifyStr } from "@utils/slugify";
+import { SITE } from "@config";
+import getSeries from "@utils/getSeries";
+import Layout from "@layouts/layout.astro";
+import Footer from "@components/footer.astro";
+import Main from "@layouts/main.astro";
+import Header from "@components/header.astro";
+import Card from "@components/card";
+
+export interface Props {
+  post: CollectionEntry<"blog">;
+  series: string;
+}
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  const series = getSeries(posts);
+
+  console.log({ series });
+
+  return series.map(s => ({
+    params: { series: slugifyStr(s) },
+    props: { series: s },
+  }));
+}
+
+const { series } = Astro.props;
+
+const posts = await getCollection("blog", ({ data }) => !data.draft);
+const postsInSeries = getPostsInSeries(posts, series);
+const sortedPosts = getSortedPosts(postsInSeries);
+
+console.log({ postsInSeries });
+
+const totalPages = getPageNumbers(sortedPosts.length);
+
+const currentPage =
+  series && !isNaN(Number(series)) && totalPages.includes(Number(series))
+    ? Number(series)
+    : 0;
+const lastPost = currentPage * SITE.postPerPage;
+const startPost = lastPost - SITE.postPerPage;
+
+const paginatedPosts = sortedPosts.slice(startPost, lastPost);
+---
+
+<Layout title={`Series: ${series} | ${SITE.title}`}>
+  <Header activeNav="series" />
+  <Main
+    pageTitle={`Series: ${series}`}
+    pageDesc={`All the articles from the "${series}" series.`}
+  >
+    <ul>
+      {
+        postsInSeries.map(({ data }) => (
+          <Card href={`/posts/${slugify(data)}`} frontmatter={data} />
+        ))
+      }
+    </ul>
+  </Main>
+  <Footer />
+</Layout>

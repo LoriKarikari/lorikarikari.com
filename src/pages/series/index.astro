@@ -1,0 +1,36 @@
+---
+import Footer from "@components/footer.astro";
+import Header from "@components/header.astro";
+import { SITE } from "@config";
+import Layout from "@layouts/layout.astro";
+import Main from "@layouts/main.astro";
+import getSeries from "@utils/getSeries";
+import { slugifyStr } from "@utils/slugify";
+import { getCollection } from "astro:content";
+
+const posts = await getCollection("blog");
+const series = getSeries(posts);
+---
+
+<Layout title={`Series | ${SITE.title}`}>
+  <Header activeNav="series" />
+  <Main pageTitle="Series" pageDesc="All the series on this blog.">
+    <ul>
+      {
+        series.map(s => (
+          <li class="my-6">
+            <a
+              href={`/series/${slugifyStr(s)}`}
+              class="inline-block text-lg font-medium text-[#414564] decoration-dashed underline-offset-4 focus-visible:no-underline focus-visible:underline-offset-0"
+            >
+              <h3 class="text-lg font-medium decoration-dashed hover:underline">
+                {s}
+              </h3>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Main>
+  <Footer />
+</Layout>

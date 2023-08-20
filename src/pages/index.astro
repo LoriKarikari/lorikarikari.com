@@ -1,18 +1,22 @@
 ---
 import { getCollection } from "astro:content";
-import Layout from "@layouts/Layout.astro";
-import Header from "@components/Header.astro";
-import Footer from "@components/Footer.astro";
-import LinkButton from "@components/LinkButton.astro";
-import Card from "@components/Card";
-import Socials from "@components/Socials.astro";
+import Layout from "@layouts/layout.astro";
+import Header from "@components/header.astro";
+import Footer from "@components/footer.astro";
+import LinkButton from "@components/link-button.astro";
+import Card from "@components/card";
+import Socials from "@components/socials.astro";
 import getSortedPosts from "@utils/getSortedPosts";
-import slugify from "@utils/slugify";
+import slugify, { slugifyStr } from "@utils/slugify";
 import { SOCIALS } from "@config";
+import getSeries from "@utils/getSeries";
 
 const posts = await getCollection("blog");
 
 const sortedPosts = getSortedPosts(posts);
+const series = getSeries(posts);
+
+console.log(series);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 
 const socialCount = SOCIALS.filter(social => social.active).length;
@@ -46,11 +50,9 @@ const socialCount = SOCIALS.filter(social => social.active).length;
       </a>
 
       <p class="my-2">
-        Welcome to my personal blog! Here, I'll be sharing my experiences as I
-        delve into the world of web development, cloud infrastructure and a
-        bunch of other things that I am interested in. This includes languages
-        like Go and TypeScript, building side projects, and cloud services like
-        AWS.
+        Welcome to my personal blog! Here, I will be sharing my experiences as I
+        delve into the world of web development, cloud, infrastructure and a
+        bunch of other things that I am interested in.
       </p>
 
       {
@@ -86,9 +88,38 @@ const socialCount = SOCIALS.filter(social => social.active).length;
         </>
       )
     }
+
+    {
+      series.length > 0 && (
+        <>
+          <section class="pt-8">
+            <h2 class="text-2xl font-semibold tracking-wide">
+              <span class=" text-[#DE8379]">Series</span>
+            </h2>
+            <ul>
+              {series.map(
+                (s, index) =>
+                  index < 4 && (
+                    <li class="my-6">
+                      <a
+                        href={`/series/${slugifyStr(s)}`}
+                        class="inline-block text-lg font-medium text-[#414564] decoration-dashed underline-offset-4 focus-visible:no-underline focus-visible:underline-offset-0"
+                      >
+                        <h3 class="text-lg font-medium decoration-dashed hover:underline">
+                          {s}
+                        </h3>
+                      </a>
+                    </li>
+                  )
+              )}
+            </ul>
+          </section>
+        </>
+      )
+    }
     <section class="pb-6 pt-8">
       <h2 class="text-2xl font-semibold tracking-wide">
-        <span class="bg-[#DE8379] p-2 text-white">Recent posts</span>
+        <span class="text-[#DE8379]">Recent posts</span>
       </h2>
       <ul>
         {
