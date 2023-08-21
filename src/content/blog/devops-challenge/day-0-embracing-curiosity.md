@@ -1,5 +1,4 @@
 ---
-author: Sat Naing
 pubDatetime: 2023-08-18
 title: "DevOps Challenge: Day 0 - Embracing Curiosity"
 postSlug: devops-challenge-day-0-embracing-curiosity
